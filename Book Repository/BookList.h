@@ -5,12 +5,13 @@
 #include "Book.h"
 
 /**
-A linked list of books, with all necessary functionality.
-This is a singleton class, as there is only one library to keep track of.
+A doubly linked list of books, with all necessary functionality.
+This class is implemented as a singleton class, the application
+is single terminal, and has only one library to manage.
 */
 class BookList
 {
-	Book* books;//Pointer to the first book in the list
+	Book* firstBook;//Pointer to the first book in the list
 
 public:
 	/**
@@ -62,14 +63,14 @@ public:
 	Book* findBook() const;
 
 	/**
-	Finds and returns a pointer to a single book with a title that matches, or contains, the search string
+	Finds and returns a pointer to a single book with a title that EXACTLY matches the search string
 	@param string The string to compare book titles to
 	@return Book* The matching book
 	*/
 	Book* findTitle(std::string searchParam) const;
 
 	/**
-	Finds and returns a pointer to a single book with an ISBN that matches, or contains, the search string
+	Finds and returns a pointer to a single book with an ISBN that EXACTLY matches the search string
 	@param string The string to compare book ISBN to
 	@return Book* The matching book
 	*/
@@ -103,7 +104,7 @@ public:
 	}
 
 private:
-	BookList() {} //Private to prevent creating new instances
+	BookList() {} //Private to prevent creation of new instances
 	void operator=(BookList const&); // Overwritten, but not implemented to prevent copying
 };
 #endif

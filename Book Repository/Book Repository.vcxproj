@@ -64,14 +64,23 @@
   <ItemGroup>
     <ClInclude Include="Book.h" />
     <ClInclude Include="BookList.h" />
+    <ClInclude Include="Encrypter.h" />
+    <ClInclude Include="UserList.h" />
+    <ClInclude Include="UserMenu.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="BookList.cpp" />
+    <ClCompile Include="Encrypter.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="User.cpp" />
+    <ClCompile Include="UserList.cpp" />
+    <ClCompile Include="UserMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Books.txt" />
+    <Text Include="users.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

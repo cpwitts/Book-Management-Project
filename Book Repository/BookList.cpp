@@ -8,7 +8,7 @@
 
 bool BookList::readBooks()
 {
-	books = NULL;
+	firstBook = NULL;
 	std::ifstream bookFile("books.txt"); //Opens input stream
 	std::string line; //Used for a single line of input
 	std::string input; //Used for multiple lines of input
@@ -22,10 +22,10 @@ bool BookList::readBooks()
 		bool newAvailability;
 		Book* prevBook = NULL;
 		Book* tempBook = NULL;
-		//Gets columns array
+
 		while (getline(bookFile, line))
 		{
-			//If the first character of a line is an empty line, reset count. A new book is about to be read.
+			//If the line is an empty line, reset count. A new book is about to be read.
 			if (line == "")
 			{
 				count = 0;
@@ -59,11 +59,11 @@ bool BookList::readBooks()
 
 				//All the data for a book has been read in, so a book is created
 				tempBook = new Book(newTitle, newAuthor, newISBN, newAvailability);
-				//If there are no books, this book becomes the first. Otherwise, it ias added to the end of the list
-				if (books == NULL)
+				//If there is no first book, this book becomes the first. Otherwise, it ias added to the end of the list
+				if (firstBook == NULL)
 				{
-					books = tempBook;
-					prevBook = books;
+					firstBook = tempBook;
+					prevBook = firstBook;
 				}
 				else
 				{
@@ -84,7 +84,9 @@ bool BookList::readBooks()
 void BookList::saveChanges()
 {
 	std::ofstream bookFile("books.txt"); //Opens output stream
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
+
+	//Iterates through list, writing details to text file
 	while (currentBook != NULL)
 	{
 		bookFile << currentBook->getTitle() << std::endl << currentBook->getAuthor() << std::endl << currentBook->getIsbn() << std::endl;
@@ -104,13 +106,13 @@ void BookList::saveChanges()
 
 void BookList::addBook(Book* bookParam)
 {
-	if (books == NULL)
+	if (firstBook == NULL)
 	{
-		books = bookParam;
+		firstBook = bookParam;
 	}
 	else
 	{
-		Book* currentBook = books;
+		Book* currentBook = firstBook;
 		while (currentBook->getNext() != NULL)
 		{
 			currentBook = currentBook->getNext();
@@ -127,22 +129,23 @@ void BookList::removeBook(Book* bookParam)
 	{
 		bookParam->getPrev()->setNext(bookParam->getNext());
 	}
-	//If the book has no prev, it is the first book, so books must be changed to place the next book at the start
+	//If the book has no prev, it is the first book, so firstBook must be changed to place the next book at the start
 	else
 	{
-		books = bookParam->getNext();
+		firstBook = bookParam->getNext();
 	}
 	if (bookParam->getNext() != NULL)
 	{
 		bookParam->getNext()->setPrev(bookParam->getPrev());
 	}
+	std::cout << std::endl << bookParam->getTitle() << " Was removed.\n";
 	delete bookParam;
 	saveChanges();
 }
 
 void BookList::searchTitle(std::string searchParam) const
 {
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
 	std::string bookTitle = "";
 	std::cout << std::endl;
 
@@ -171,7 +174,7 @@ void BookList::searchTitle(std::string searchParam) const
 
 void BookList::searchAuthor(std::string searchParam) const
 {
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
 	std::string bookAuthor = "";
 	std::cout << std::endl;
 
@@ -200,7 +203,7 @@ void BookList::searchAuthor(std::string searchParam) const
 
 void BookList::searchIsbn(std::string searchParam) const
 {
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
 	std::string bookIsbn = "";
 	std::cout << std::endl;
 
@@ -220,14 +223,14 @@ Book* BookList::findBook() const
 	std::string search;
 	char choice;
 	Book* foundBook = NULL;
-	std::cout << "Find book to remove by:\n1: Title\n2: ISBN\n\n";
+	std::cout << "Find book by:\n1: Title\n2: ISBN\n\n";
 	std::cin >> choice;
 	std::cin.clear();
 	std::cin.ignore(1);
 	switch (choice)
 	{
 	case '1':
-		std::cout << "Please enter the title of the book to remove:\n";
+		std::cout << "Please enter the title of the book:\n";
 		getline(std::cin, search);
 		foundBook = findTitle(search);
 		if (foundBook != NULL)
@@ -241,7 +244,7 @@ Book* BookList::findBook() const
 		}
 		break;
 	case '2':
-		std::cout << "Please enter the ISBN of the book to remove:\n";
+		std::cout << "Please enter the ISBN of the book:\n";
 		getline(std::cin, search);
 		foundBook = findIsbn(search);
 		if (foundBook != NULL)
@@ -262,7 +265,7 @@ Book* BookList::findBook() const
 
 Book* BookList::findTitle(std::string searchParam) const
 {
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
 	std::string bookTitle = "";
 	std::cout << std::endl;
 
@@ -292,7 +295,7 @@ Book* BookList::findTitle(std::string searchParam) const
 
 Book* BookList::findIsbn(std::string searchParam) const
 {
-	Book* currentBook = books;
+	Book* currentBook = firstBook;
 	std::string bookIsbn = "";
 	std::cout << std::endl;
 
