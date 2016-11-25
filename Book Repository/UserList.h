@@ -3,22 +3,23 @@
 
 #include <string>
 #include "User.h"
+#include "CustomLinkedList.h"
 
 /**
 A doubly linked list of Users, with all necessary functionality.
 This class is implemented as a singleton class, the application
 is single terminal, and has only one set of users to manage.
 */
-class UserList
+class UserList : CustomLinkedList
 {
-	User* firstUser;//Pointer to the first User in the list
+	User* firstItem;//Pointer to the first User in the list
 
 public:
 	/**
 	Reads in seat data from a specified text file
 	@return bool True if a file was found and read, otherwise false
 	*/
-	bool readUsers();
+	bool readData();
 
 	/**
 	Writes out all the changes made to the text file
@@ -29,13 +30,13 @@ public:
 	Adds a new User to the list of Users
 	@param User the User to add
 	*/
-	void addUser(User* UserParam);
+	void addItem(CustomListItem* UserParam);
 
 	/**
 	Removes a User from the list of Users
 	@param User* the User to remove
 	*/
-	void removeUser(User* UserParam);
+	void removeItem(CustomListItem* UserParam);
 
 	/**
 	Finds a user by name. The name must match the search string EXACTLY
@@ -43,6 +44,13 @@ public:
 	@return User* the User found (NULL if no User is found)
 	*/
 	User* findUser(std::string nameParam) const;
+
+	/**
+	Checks if a password for a user is valid, i.e. contains only alphabetic characters
+	@param std::string the string to validate
+	@return bool True if password is valid, false if invalid
+	*/
+	bool validatePassword(std::string passwordParam) const;
 
 	/**
 	Returns an instance of UserList

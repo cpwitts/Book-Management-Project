@@ -13,8 +13,8 @@ char choice; //Takes in the users choice of option in menu loops
 
 void UserMenu::displayUserSelectMenu()
 {	
-	bookList.readBooks();
-	userList.readUsers();
+	bookList.readData();
+	userList.readData();
 	
 	//Allows the user to make a choice. Will not proceed until a valid choice is made
 	while (quit == false)
@@ -237,7 +237,7 @@ void UserMenu::displayAdminMenu()
 		std::cin >> choice;
 		std::cin.clear();
 		std::cin.ignore(1);
-		std::string search; //Used to take in use input
+		std::string search; //Used to take in user input
 		switch (choice)
 		{
 		case '1':
@@ -248,7 +248,7 @@ void UserMenu::displayAdminMenu()
 			getline(std::cin, newAuthor);
 			std::cout << "\nPlease enter the books isbn:\n";
 			getline(std::cin, newIsbn);
-			bookList.addBook(new Book(newTitle, newAuthor, newIsbn, true));
+			bookList.addItem(new Book(newTitle, newAuthor, newIsbn, true));
 			break;
 
 		case '2':
@@ -256,7 +256,7 @@ void UserMenu::displayAdminMenu()
 			bookToRemove = bookList.findBook();
 			if (bookToRemove != NULL)
 			{
-				bookList.removeBook(bookToRemove);
+				bookList.removeItem(bookToRemove);
 			}
 			break;
 
@@ -276,9 +276,16 @@ void UserMenu::displayAdminMenu()
 			//Prompts the user for a new users information, then creates it
 			std::cout << "\nPlease enter the username:\n";
 			getline(std::cin, newUsername);
-			std::cout << "\nPlease enter the password:\n";
+			std::cout << "\nPlease enter the password (alphabet characters only, case sensitive):\n";
 			getline(std::cin, newPassword);
-			userList.addUser(new User(newUsername, newPassword));
+			if (userList.validatePassword(newPassword))
+			{
+				userList.addItem(new User(newUsername, newPassword));
+			}
+			else
+			{
+				std::cout << "\nInvalid password. Contained non-alphabetic characters\n";
+			}
 			break;
 
 		case '6':
@@ -288,7 +295,7 @@ void UserMenu::displayAdminMenu()
 			userToRemove = userList.findUser(username);
 			if (userToRemove != NULL)
 			{
-				userList.removeUser(userToRemove);
+				userList.removeItem(userToRemove);
 			}
 			break;
 

@@ -6,9 +6,9 @@
 #include <string>
 
 
-bool BookList::readBooks()
+bool BookList::readData()
 {
-	firstBook = NULL;
+	firstItem = NULL;
 	std::ifstream bookFile("books.txt"); //Opens input stream
 	std::string line; //Used for a single line of input
 	std::string input; //Used for multiple lines of input
@@ -60,10 +60,10 @@ bool BookList::readBooks()
 				//All the data for a book has been read in, so a book is created
 				tempBook = new Book(newTitle, newAuthor, newISBN, newAvailability);
 				//If there is no first book, this book becomes the first. Otherwise, it ias added to the end of the list
-				if (firstBook == NULL)
+				if (firstItem == NULL)
 				{
-					firstBook = tempBook;
-					prevBook = firstBook;
+					firstItem = tempBook;
+					prevBook = firstItem;
 				}
 				else
 				{
@@ -84,7 +84,7 @@ bool BookList::readBooks()
 void BookList::saveChanges()
 {
 	std::ofstream bookFile("books.txt"); //Opens output stream
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 
 	//Iterates through list, writing details to text file
 	while (currentBook != NULL)
@@ -99,23 +99,25 @@ void BookList::saveChanges()
 			bookFile << "Unavailable";
 		}
 		bookFile << std::endl << std::endl;
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 	bookFile.close();
 }
 
-void BookList::addBook(Book* bookParam)
+void BookList::addItem(CustomListItem* bookParam)
 {
-	if (firstBook == NULL)
+	//If there is no first book, the new book becomes the first book
+	if (firstItem == NULL)
 	{
-		firstBook = bookParam;
+		firstItem = (Book*)bookParam;
 	}
+	//Otherwise, add the new book to the end of the list
 	else
 	{
-		Book* currentBook = firstBook;
+		Book* currentBook = firstItem;
 		while (currentBook->getNext() != NULL)
 		{
-			currentBook = currentBook->getNext();
+			currentBook = (Book*)currentBook->getNext();
 		}
 		currentBook->setNext(bookParam);
 		bookParam->setPrev(currentBook);
@@ -123,29 +125,29 @@ void BookList::addBook(Book* bookParam)
 	}
 }
 
-void BookList::removeBook(Book* bookParam)
+void BookList::removeItem(CustomListItem* bookParam)
 {
 	if (bookParam->getPrev() != NULL)
 	{
 		bookParam->getPrev()->setNext(bookParam->getNext());
 	}
-	//If the book has no prev, it is the first book, so firstBook must be changed to place the next book at the start
+	//If the book has no prev, it is the first book, so firstItem must be changed to place the next book at the start
 	else
 	{
-		firstBook = bookParam->getNext();
+		firstItem = (Book*)bookParam->getNext();
 	}
 	if (bookParam->getNext() != NULL)
 	{
 		bookParam->getNext()->setPrev(bookParam->getPrev());
 	}
-	std::cout << std::endl << bookParam->getTitle() << " Was removed.\n";
+	std::cout << std::endl << ((Book*)bookParam)->getTitle() << " Was removed.\n";
 	delete bookParam;
 	saveChanges();
 }
 
 void BookList::searchTitle(std::string searchParam) const
 {
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 	std::string bookTitle = "";
 	std::cout << std::endl;
 
@@ -164,17 +166,17 @@ void BookList::searchTitle(std::string searchParam) const
 			c = toupper(c);
 		}
 
-		if (bookTitle.find(searchParam) != std::string::npos)
+		if (bookTitle.find(searchParam) != std::string::npos)//npos is returned by find() if the string to search for is not found in the string to be checked
 		{
 			currentBook->printDetails();
 		}
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 }
 
 void BookList::searchAuthor(std::string searchParam) const
 {
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 	std::string bookAuthor = "";
 	std::cout << std::endl;
 
@@ -187,48 +189,54 @@ void BookList::searchAuthor(std::string searchParam) const
 	{
 		bookAuthor = currentBook->getAuthor();
 
-		//Changes the book title to upper case
+		//Changes the book author to upper case
 		for (char & c : bookAuthor)
 		{
 			c = toupper(c);
 		}
 
-		if (bookAuthor.find(searchParam) != std::string::npos)
+		if (bookAuthor.find(searchParam) != std::string::npos) //npos is returned by find() if the string to search for is not found in the string to be checked
 		{
 			currentBook->printDetails();
 		}
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 };
 
 void BookList::searchIsbn(std::string searchParam) const
 {
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 	std::string bookIsbn = "";
 	std::cout << std::endl;
 
 	while (currentBook != NULL)
 	{
 		bookIsbn = currentBook->getIsbn();
-		if (bookIsbn.find(searchParam) != std::string::npos)
+		if (bookIsbn.find(searchParam) != std::string::npos)//npos is returned by find() if the string to search for is not found in the string to be checked
 		{
 			currentBook->printDetails();
 		}
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 }
 
 Book* BookList::findBook() const
 {
+	//Variables to take in user input
 	std::string search;
 	char choice;
+
+	//Pointer to the book to return
 	Book* foundBook = NULL;
+
+	//Allows tge user to select a means of search
 	std::cout << "Find book by:\n1: Title\n2: ISBN\n\n";
 	std::cin >> choice;
 	std::cin.clear();
 	std::cin.ignore(1);
 	switch (choice)
 	{
+		//Find by title
 	case '1':
 		std::cout << "Please enter the title of the book:\n";
 		getline(std::cin, search);
@@ -243,6 +251,7 @@ Book* BookList::findBook() const
 			return NULL;
 		}
 		break;
+		//Find by ISBN
 	case '2':
 		std::cout << "Please enter the ISBN of the book:\n";
 		getline(std::cin, search);
@@ -265,7 +274,7 @@ Book* BookList::findBook() const
 
 Book* BookList::findTitle(std::string searchParam) const
 {
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 	std::string bookTitle = "";
 	std::cout << std::endl;
 
@@ -288,14 +297,14 @@ Book* BookList::findTitle(std::string searchParam) const
 		{
 			return currentBook;
 		}
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 	return NULL;
 }
 
 Book* BookList::findIsbn(std::string searchParam) const
 {
-	Book* currentBook = firstBook;
+	Book* currentBook = firstItem;
 	std::string bookIsbn = "";
 	std::cout << std::endl;
 
@@ -313,7 +322,7 @@ Book* BookList::findIsbn(std::string searchParam) const
 		{
 			return currentBook;
 		}
-		currentBook = currentBook->getNext();
+		currentBook = (Book*)currentBook->getNext();
 	}
 	return NULL;
 }
@@ -322,6 +331,8 @@ void BookList::checkOutBook()
 {
 	Book* bookToCheckOut = NULL;
 	bookToCheckOut = findBook();
+
+	//If the book is found, and is available, it is changed to unavailable, and the booklist is saved.
 	if (bookToCheckOut != NULL && bookToCheckOut->isAvailable())
 	{
 		bookToCheckOut->setAvailable(false);

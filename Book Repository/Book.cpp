@@ -7,8 +7,8 @@ Book::Book()
 	author = "";
 	isbn = "";
 	available = true;
-	next = NULL;
-	prev = NULL;
+	setNext(NULL);
+	setPrev(NULL);
 }
 
 Book::Book(std::string titleParam, std::string authorParam, std::string isbnParam, bool availableParam)
@@ -17,8 +17,8 @@ Book::Book(std::string titleParam, std::string authorParam, std::string isbnPara
 	author = authorParam;
 	isbn = isbnParam;
 	available = availableParam;
-	next = NULL;
-	prev = NULL;
+	setNext(NULL);
+	setPrev(NULL);
 }
 
 std::string Book::getTitle() const
@@ -59,26 +59,6 @@ bool Book::isAvailable() const
 void Book::setAvailable(bool availableParam)
 {
 	available = availableParam;
-}
-
-Book* Book::getNext() const
-{
-	return next;
-}
-
-void Book::setNext(Book* nextParam)
-{
-	next = nextParam;
-}
-
-Book* Book::getPrev() const
-{
-	return prev;
-}
-
-void Book::setPrev(Book* prevParam)
-{
-	prev = prevParam;
 }
 
 void Book::printDetails() const

@@ -3,22 +3,23 @@
 
 #include <string>
 #include "Book.h"
+#include "CustomLinkedList.h"
 
 /**
 A doubly linked list of books, with all necessary functionality.
 This class is implemented as a singleton class, the application
 is single terminal, and has only one library to manage.
 */
-class BookList
+class BookList : CustomLinkedList
 {
-	Book* firstBook;//Pointer to the first book in the list
+	Book* firstItem;//Pointer to the first book in the list
 
 public:
 	/**
 	Reads in seat data from a specified text file
 	@return bool True if a file was found and read, otherwise false
 	*/
-	bool readBooks();
+	bool readData();
 
 	/**
 	Writes out all the changes made to the text file
@@ -29,13 +30,13 @@ public:
 	Adds a new book to the list of books
 	@param Book the book to add
 	*/
-	void addBook(Book* bookParam);
+	void addItem(CustomListItem* bookParam);
 
 	/**
 	Removes a book from the list of books
 	@param Book* the book to remove
 	*/
-	void removeBook(Book* bookParam);
+	void removeItem(CustomListItem* bookParam);
 
 	/**
 	Searches and prints out all books with a title that matches, or contains, the search string

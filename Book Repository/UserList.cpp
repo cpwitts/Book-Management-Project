@@ -6,9 +6,9 @@
 #include <string>
 
 
-bool UserList::readUsers()
+bool UserList::readData()
 {
-	firstUser = NULL;
+	firstItem = NULL;
 	std::ifstream userFile("users.txt"); //Opens input stream
 	std::string line; //Used for a single line of input
 	std::string input; //Used for multiple lines of input
@@ -47,10 +47,10 @@ bool UserList::readUsers()
 				*/
 				tempUser = new User(Encrypter::decryptString(newName), Encrypter::decryptString(newPassword));
 				//If there is no first User, this User becomes the first. Otherwise, it is added to the end of the list
-				if (firstUser == NULL)
+				if (firstItem == NULL)
 				{
-					firstUser = tempUser;
-					prevUser = firstUser;
+					firstItem = tempUser;
+					prevUser = firstItem;
 				}
 				else
 				{
@@ -71,53 +71,56 @@ bool UserList::readUsers()
 void UserList::saveChanges()
 {
 	std::ofstream userFile("users.txt"); //Opens output stream
-	User* currentUser = firstUser;
+	User* currentUser = firstItem;
 
 	//Iterates through list, writing details to text file
 	while (currentUser != NULL)
 	{
 		userFile << currentUser->getName() << std::endl << currentUser->getPassword() << std::endl << std::endl;
-		currentUser = currentUser->getNext();
+		currentUser = (User*)currentUser->getNext();
 	}
 	userFile.close();
 }
 
-void UserList::addUser(User* userParam)
+void UserList::addItem(CustomListItem* userParam)
 {
-	if (firstUser == NULL)
+	//If there are no users, then the new user becomes the first user
+	if (firstItem == NULL)
 	{
-		firstUser = userParam;
+		firstItem = (User*)userParam;
 	}
+	//Otherwise, insert the new user at the end of the list
 	else
 	{
-		User* currentUser = firstUser;
+		User* currentUser = firstItem;
 		while (currentUser->getNext() != NULL)
 		{
-			currentUser = currentUser->getNext();
+			currentUser = (User*)currentUser->getNext();
 		}
 		currentUser->setNext(userParam);
 		userParam->setPrev(currentUser);
 	}
+	//Save the new list of users
 	saveChanges();
-	std::cout << std::endl << Encrypter::decryptString(userParam->getName()) << " was added";
+	std::cout << std::endl << Encrypter::decryptString(((User*)userParam)->getName()) << " was added";
 }
 
-void UserList::removeUser(User* userParam)
+void UserList::removeItem(CustomListItem* userParam)
 {
 	if (userParam->getPrev() != NULL)
 	{
 		userParam->getPrev()->setNext(userParam->getNext());
 	}
-	//If the User has no prev, it is the first User, so firstUser must be changed to place the next User at the start
+	//If the User has no prev, it is the first User, so firstItem must be changed to place the next User at the start
 	else
 	{
-		firstUser = userParam->getNext();
+		firstItem = (User*)userParam->getNext();
 	}
 	if (userParam->getNext() != NULL)
 	{
 		userParam->getNext()->setPrev(userParam->getPrev());
 	}
-	std::cout << std::endl << Encrypter::decryptString(userParam->getName()) << " was successfully removed.\n";
+	std::cout << std::endl << Encrypter::decryptString(((User*)userParam)->getName()) << " was successfully removed.\n";
 	delete userParam;
 	saveChanges();
 }
@@ -125,7 +128,7 @@ void UserList::removeUser(User* userParam)
 
 User* UserList::findUser(std::string nameParam) const
 {
-	User* currentUser = firstUser;
+	User* currentUser = firstItem;
 	std::string searchName = Encrypter::encryptString(nameParam); //Encrypts name to search for, so it can eb compared with other encrypted names.
 	std::string userName = ""; //stores name of user being comapared
 	std::cout << std::endl;
@@ -149,9 +152,25 @@ User* UserList::findUser(std::string nameParam) const
 		{
 			return currentUser;
 		}
-		currentUser = currentUser->getNext();
+		currentUser = (User*)currentUser->getNext();
 	}
 	std::cout << "\nNo user with that username was found\n";
 	return NULL;
+}
+
+
+bool UserList::validatePassword(std::string passwordParam) const
+{
+	//Iterates through all characters in the string parameter, returning false when one isn't a letter
+	for (char c : passwordParam)
+	{
+		if (!isalpha(c))
+		{
+			return false;
+		}
+	}
+
+	//returns true if all characters are letters
+	return true;
 }
 

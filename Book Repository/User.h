@@ -2,13 +2,12 @@
 #ifndef USER_H
 #define USER_H
 #include <string>
+#include "CustomListItem.h"
 
-class User
+class User : public CustomListItem
 {
 	std::string name; //Name of user
 	std::string password; //Password of user
-	User* next; //Pointer to next user
-	User* prev; //Pointer to previous user
 
 public:
 	/**
@@ -35,25 +34,6 @@ public:
 	@return bool True is the password is correct, otherwise false
 	*/
 	bool checkPassword(std::string enteredPassword) const;
-
-	/**
-	@return User* Pointer to the next user
-	*/
-	User* getNext() const;
-	/**
-	Sets the next user in the list
-	@param User* Pointer to the next user in the list
-	*/
-	void setNext(User* nextParam);
-	/**
-	@return User* Pointer to the previous user
-	*/
-	User* getPrev() const;
-	/**
-	Sets the next user in the list
-	@param User* Pointer to the previous user in the list
-	*/
-	void setPrev(User* prevParam);
 
 	/**
 	Creates a user with name and password set to an empty string

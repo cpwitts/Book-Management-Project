@@ -2,15 +2,14 @@
 #ifndef BOOK_H
 #define BOOK_H
 #include <string>
+#include "CustomListItem.h"
 
-class Book
+class Book : public CustomListItem
 {
 	std::string title; //Title of the book
 	std::string author; //Author of the book
 	std::string isbn; // ISBN of the book
 	bool available; //Is the book currently available
-	Book* next; //Pointer to next book in list
-	Book* prev; //Pointer to previous book in list
 
 public:
 	/**
@@ -49,24 +48,6 @@ public:
 	@param bool true if avaible, otherwise false
 	*/
 	void setAvailable(bool availableParam);
-	/**
-	@return Book* pointer to the next book
-	*/
-	Book* getNext() const;
-	/**
-	Sets the next book in the list
-	@param Book* The next book in the list
-	*/
-	void setNext(Book* nextParam);
-	/**
-	@return Book* pointer to the previous book
-	*/
-	Book* getPrev() const;
-	/**
-	Sets the previous book in the list
-	@param Book* pointer to the previous book
-	*/
-	void setPrev(Book* prevParam);
 	/**
 	Prints the relevant details of the book
 	*/

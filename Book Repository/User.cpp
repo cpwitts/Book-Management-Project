@@ -6,16 +6,16 @@ User::User()
 {
 	name = "";
 	password = "";
-	next = NULL;
-	prev = NULL;
+	setNext(NULL);
+	setPrev(NULL);
 }
 
 User::User(std::string nameParam, std::string passwordParam)
 {
 	name = Encrypter::encryptString(nameParam);
 	password = Encrypter::encryptString(passwordParam);
-	next = NULL;
-	prev = NULL;
+	setNext(NULL);
+	setPrev(NULL);
 }
 
 std::string User::getName() const
@@ -40,6 +40,7 @@ void User::setPassword(std::string passwordParam)
 
 bool User::checkPassword(std::string enteredPassword) const
 {
+	//Encrypt the entered text before testing, so that it should match the encrypted password saved
 	std::string testString = Encrypter::encryptString(enteredPassword);
 	if (password.compare(testString) == 0)
 	{
@@ -50,24 +51,3 @@ bool User::checkPassword(std::string enteredPassword) const
 		return false;
 	}
 }
-
-User* User::getNext() const
-{
-	return next;
-}
-
-void User::setNext(User* nextParam)
-{
-	next = nextParam;
-}
-
-User* User::getPrev() const
-{
-	return prev;
-}
-
-void User::setPrev(User* prevParam)
-{
-	prev = prevParam;
-}
-
