@@ -30,13 +30,13 @@ public:
 	Adds a new User to the list of Users
 	@param User the User to add
 	*/
-	void addItem(CustomListItem* UserParam);
+	void addItem(CustomListItem* userParam);
 
 	/**
 	Removes a User from the list of Users
 	@param User* the User to remove
 	*/
-	void removeItem(CustomListItem* UserParam);
+	void removeItem(CustomListItem* userParam);
 
 	/**
 	Finds a user by name. The name must match the search string EXACTLY
